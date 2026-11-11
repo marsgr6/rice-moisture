@@ -17,7 +17,8 @@ The photographs (about 3.3 GB) are **not included** because of their size. They 
 | `RESULTS/GLOBAL/EV/` | Test-set classification reports of the global descriptors (per descriptor and condition), merged in `mergedEV.csv` |
 | `RESULTS/LOCAL/` | Codebook-size cross-validation (`CV/`) and test-set results (`EV/`) of the local descriptors |
 | `RESULTS/*.Rmd`, `RESULTS/*.html` | R notebooks that summarize the results and draw the figures, with their rendered output |
-| `analysis/` | Scripts for the DEA and for the figures of the revised manuscript (see below) |
+| `analysis/` | Scripts for the DEA and for the figures of the revised manuscript, and the re-evaluation scripts (`analysis/reevaluation/`; see below) |
+| `RESULTS/REEVALUATION/` | Results of the re-evaluation: per-run scores and predictions, measured-cost DEA, and cross-condition transfer |
 
 ### Descriptor notebooks
 
@@ -38,6 +39,21 @@ Each notebook processes one scale per run (variable `scale`) and writes its resu
 | `local_fig.R` | Figure 6 (local descriptors): `Rscript analysis/local_fig.R RESULTS/LOCAL/EV/local_new.csv fig6.eps` |
 | `heatmap_fig.py` | Figure 7 (all descriptors at 15%, Random Forest): `python3 analysis/heatmap_fig.py RESULTS/GLOBAL/EV/mergedEV.csv RESULTS/LOCAL/EV/local_new.csv fig7.eps` |
 | `g06_hist_fig.py` | Figure 5 (grayscale histograms of G06); requires the photographs resized to PNG |
+
+### Re-evaluation scripts (`analysis/reevaluation/`, Section 3.7 of the paper)
+
+Re-implementation of the seven global descriptors at the 15% scale, used for the time-block validation, the intensity-normalization test, the measured-cost DEA, and the cross-condition experiment. Results are in `RESULTS/REEVALUATION/`.
+
+| Script / file | Purpose |
+|---|---|
+| `manifest.csv` | The 1630 photographs used (duplicates removed): condition, level, file name, capture time, time block, and EXIF brightness, ISO, exposure, and f-number |
+| `exif.py`, `exif2.py` | Read capture times and camera settings from the photographs (Table 3) |
+| `convert.sh` | Resize the HEIC photographs to 15% PNG files named `<cond>_<level>_<file>.png` (ImageMagick; reads `source<TAB>destination` lines from standard input) |
+| `features.py` | Extract the seven descriptors from the original and intensity-normalized images, with extraction times: `python3 features.py manifest.csv PNGDIR features15.npz` |
+| `classify.py` | MLP, RF, and XGBoost with 20 repeated stratified splits and leave-one-time-block-out validation (Tables 13 and 14): `python3 classify.py manifest.csv features15.npz OUT/` |
+| `analyze.py` | Summary tables of the re-evaluation: `python3 analyze.py OUT/ features15.npz RESULTS/GLOBAL/EV/mergedEV.csv` |
+| `dea_measured.py`, `dea_measured_fig.R` | DEA with measured extraction time and model size (Tables 15 and 16, Figure 10) |
+| `crosscond.py` | Cross-condition transfer: train on one condition, test on the others (Table 17): `python3 crosscond.py manifest.csv features15.npz OUT/scores.csv OUT/` |
 
 ## Running the notebooks
 
