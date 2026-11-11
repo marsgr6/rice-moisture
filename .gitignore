@@ -1,0 +1,7 @@
+DATA/
+FEATURES/
+models/
+*.pkl
+.ipynb_checkpoints/
+.Rhistory
+__pycache__/

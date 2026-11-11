@@ -1,0 +1,123 @@
+---
+title: "CVdata"
+output: html_document
+date: "2023-01-23"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library('rlang')
+library('ggplot2')
+library('plyr')
+library('plyr')
+library('knitr')
+```
+
+## CV Results
+
+
+```{r}
+file= "GLOBAL/CV/mergedCV.csv"
+dt <- read.csv(file, sep = ",", header=TRUE ) 
+#dt[!duplicated(dt)]
+dt$cat<-NA
+dt$cat[dt$DTYPE =="CMMS"] <- "COLOR"
+dt$cat[dt$DTYPE =="G_H"] <- "COLOR"
+dt$cat[dt$DTYPE =="HSV"] <- "COLOR"
+dt$cat[dt$DTYPE =="RGB"] <- "COLOR"
+dt$cat[dt$DTYPE =="GLCM"] <- "TEXTURE"
+dt$cat[dt$DTYPE =="HRLK"] <- "TEXTURE"
+dt$cat[dt$DTYPE =="LBP"] <- "TEXTURE"
+dt$cat <- as.factor(dt$cat)
+dt$GROUP <- gsub('C', 'G0', dt$GROUP)
+head(dt)
+
+```
+
+```{r}
+unique(dt$MODEL)
+```
+
+
+```{r}
+dt_G<-ddply(dt, c("GROUP", "DTYPE", "cat", "scale"), summarise, #
+                 nobs = length(MODEL), 
+                 scales = length(unique(scale )),
+                 p = round(mean(precision, na.rm = TRUE), 3),
+                 r = round(mean(recall, na.rm = TRUE), 3),
+                 f1 = round(mean(F1, na.rm = TRUE), 3),
+                 f1.m = round(median(F1, na.rm = TRUE), 3),
+                 f1.sd = round(sd(F1, na.rm = TRUE), 3)
+                 )
+head(dt_G)
+```
+
+```{r}
+dt_G[dt_G$cat=="COLOR", ]
+```
+
+
+```{r, echo=FALSE, dpi=300, fig.width = 10, fig.height = 6}
+# With a line graph
+pd <- position_dodge(.3)
+#ggplot(dt_G[dt_G$cat=="COLOR" & dt_G$algorithm=="G_H",], aes(x = as.factor(scale), y = f1, fill=data, group=data)) +
+ggplot(dt_G[dt_G$cat=="COLOR", ], aes(x =  as.factor(scale), y = f1, color = DTYPE, group = DTYPE)) +
+  geom_errorbar(
+    aes(ymin = f1 - f1.sd, ymax = f1 + f1.sd), width = .2, size = 0.25,  position = pd
+  ) +
+  geom_line(aes(shape=DTYPE), position = pd) +
+  geom_point(aes(shape=DTYPE), position = pd, size = 2)+scale_shape_manual(values = c(0, 15, 17, 19))+
+ # scale_shape_manual(values = c(0, 1, 8, 11, 15, 16, 17,  6))+
+  scale_y_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) + 
+  scale_color_brewer(palette = "Dark2")+
+  geom_hline(yintercept=0.7, linetype="dashed", color = "orange")+
+  theme_bw() +facet_wrap(vars(GROUP), ncol = 4)+ 
+   theme(legend.position = "top", legend.title = element_blank(), 
+           axis.line = element_line(size=1, colour = "black"),
+          strip.background = element_rect(fill = "white", colour = "black", size=0),
+           panel.grid.major = element_line(colour = "#d3d3d3"),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank(), panel.background = element_blank(),
+           plot.title = element_text(size = 14,  face = "bold"), #family = "Garamond",
+           text=element_text(), #family="Garamond"
+           axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1, colour="black", size = 9),
+           axis.text.y=element_text(colour="black", size = 9)
+         ) +
+  labs(x = "Scale (%)", y = "F1-score", subtitle='Color features')
+#ggsave("global_color.png", dpi = 300)
+ggsave("global_color.eps", dpi = 300)
+```
+
+```{r}
+dt_G[dt_G$cat=="TEXTURE", ]
+```
+
+```{r, echo=FALSE, dpi=300, fig.width = 10, fig.height = 6}
+# With a line graph
+pd <- position_dodge(.3)
+#ggplot(dt_G[dt_G$cat=="COLOR" & dt_G$algorithm=="G_H",], aes(x = as.factor(scale), y = f1, fill=data, group=data)) +
+ggplot(dt_G[dt_G$cat=="TEXTURE", ], aes(x =  as.factor(scale), y = f1, color = DTYPE, group = DTYPE)) +
+  geom_errorbar(
+    aes(ymin = f1 - f1.sd, ymax = f1 + f1.sd), width = .2, size = 0.25,  position = pd
+  ) +
+  geom_line(aes(shape=DTYPE), position = pd) +
+  geom_point(aes(shape=DTYPE), position = pd, size = 2)+scale_shape_manual(values = c(15, 17, 19, 0))+
+ # scale_shape_manual(values = c(0, 1, 8, 11, 15, 16, 17,  6))+
+  scale_y_continuous(breaks = seq(0, 1, 0.2), limits = c(0, 1)) + 
+  scale_color_brewer(palette = "Dark2")+
+  geom_hline(yintercept=0.7, linetype="dashed", color = "orange")+
+  theme_bw() +facet_wrap(vars(GROUP), ncol = 4)+ 
+   theme(legend.position = "top", legend.title = element_blank(), 
+           axis.line = element_line(size=1, colour = "black"),
+          strip.background = element_rect(fill = "white", colour = "black", size=0),
+           panel.grid.major = element_line(colour = "#d3d3d3"),
+           panel.grid.minor = element_blank(),
+           panel.border = element_blank(), panel.background = element_blank(),
+           plot.title = element_text(size = 14,  face = "bold"), #family = "Garamond",
+           text=element_text(), #family="Garamond"
+           axis.text.x=element_text(angle = 45, vjust = 1, hjust = 1, colour="black", size = 9),
+           axis.text.y=element_text(colour="black", size = 9)
+         ) +
+  labs(x = "Scale (%)", y = "F1-score", subtitle='Texture features')
+ggsave("global_texture.eps", dpi = 300)
+```
