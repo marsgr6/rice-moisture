@@ -1,0 +1,10 @@
+# Versions used for the re-evaluation (Section 3.7 of the paper); Python 3.13.5
+numpy==1.26.4
+pandas==2.3.3
+scipy==1.16.2
+scikit-learn==1.6.1
+xgboost==1.6.2
+scikit-image==0.25.0
+joblib==1.4.2
+pillow==11.3.0
+# HEIC decoding and resizing: ImageMagick 6.9.11 (convert.sh)

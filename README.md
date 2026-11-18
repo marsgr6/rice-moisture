@@ -18,7 +18,7 @@ The photographs (about 3.3 GB) are **not included** because of their size. They 
 | `RESULTS/LOCAL/` | Codebook-size cross-validation (`CV/`) and test-set results (`EV/`) of the local descriptors |
 | `RESULTS/*.Rmd`, `RESULTS/*.html` | R notebooks that summarize the results and draw the figures, with their rendered output |
 | `analysis/` | Scripts for the DEA and for the figures of the revised manuscript, and the re-evaluation scripts (`analysis/reevaluation/`; see below) |
-| `RESULTS/REEVALUATION/` | Results of the re-evaluation: per-run scores and predictions, measured-cost DEA, and cross-condition transfer |
+| `RESULTS/REEVALUATION/` | Results of the re-evaluation: per-run scores and predictions (`scores.csv`, `predictions.csv.gz`), measured-cost DEA, proxy-versus-measured DEA (`dea_compare.csv`), and cross-condition transfer |
 
 ### Descriptor notebooks
 
@@ -53,7 +53,9 @@ Re-implementation of the seven global descriptors at the 15% scale, used for the
 | `classify.py` | MLP, RF, and XGBoost with 20 repeated stratified splits and leave-one-time-block-out validation (Tables 13 and 14): `python3 classify.py manifest.csv features15.npz OUT/` |
 | `analyze.py` | Summary tables of the re-evaluation: `python3 analyze.py OUT/ features15.npz RESULTS/GLOBAL/EV/mergedEV.csv` |
 | `dea_measured.py`, `dea_measured_fig.R` | DEA with measured extraction time and model size (Tables 15 and 16, Figure 10) |
-| `crosscond.py` | Cross-condition transfer: train on one condition, test on the others (Table 17): `python3 crosscond.py manifest.csv features15.npz OUT/scores.csv OUT/` |
+| `crosscond.py` | Cross-condition transfer: train on one condition, test on the others (Table 18): `python3 crosscond.py manifest.csv features15.npz OUT/scores.csv OUT/` |
+| `dea_compare.py` | Proxy-based (feature length) versus measured-cost DEA on the same 21 pipelines and outputs, with time-block and random outputs (Table 17): `python3 dea_compare.py OUT/scores.csv features15.npz OUT/` |
+| `requirements-reevaluation.txt` | Package versions used for the re-evaluation |
 
 ## Running the notebooks
 
