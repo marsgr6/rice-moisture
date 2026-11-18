@@ -4,7 +4,7 @@ Code and results for the paper *Rice Moisture Classification from Smartphone Ima
 
 Seven moisture levels (10–16%) of INIAP 11 rice grains were photographed with an iPhone 13 Pro under eight acquisition conditions (G01–G08; in the code, `C1`–`C8`). Global and local image descriptors were classified with MLP, Random Forest, and XGBoost, and the global-descriptor pipelines were compared with Data Envelopment Analysis (DEA).
 
-The photographs (about 3.3 GB) are **not included** because of their size. They are available from the corresponding author upon reasonable request.
+The photographs (about 3.3 GB) are archived separately in Zenodo: https://doi.org/10.5281/zenodo.24354982
 
 ## Contents
 
