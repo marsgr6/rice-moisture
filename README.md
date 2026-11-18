@@ -55,6 +55,7 @@ Re-implementation of the seven global descriptors at the 15% scale, used for the
 | `dea_measured.py`, `dea_measured_fig.R` | DEA with measured extraction time and model size (Tables 15 and 16, Figure 10) |
 | `crosscond.py` | Cross-condition transfer: train on one condition, test on the others (Table 18): `python3 crosscond.py manifest.csv features15.npz OUT/scores.csv OUT/` |
 | `dea_compare.py` | Proxy-based (feature length) versus measured-cost DEA on the same 21 pipelines and outputs, with time-block and random outputs (Table 17): `python3 dea_compare.py OUT/scores.csv features15.npz OUT/` |
+| `dea_compare_fig.R` | Figure 11 (proxy-based versus measured-cost efficiency): `Rscript dea_compare_fig.R OUT/dea_compare.csv fig11.eps` |
 | `requirements-reevaluation.txt` | Package versions used for the re-evaluation |
 
 ## Running the notebooks
